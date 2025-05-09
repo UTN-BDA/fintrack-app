@@ -1,0 +1,30 @@
+' Solo modelo de clases
+package "Models" {
+  class User {
+    +int id
+    +String username
+    +String email
+    +String password_hash
+  }
+  class Category {
+    +int id
+    +String name
+    +bool is_favorite
+    +bool is_recurring
+  }
+  class Transaction {
+    +int id
+    +Decimal amount
+    +Date date
+    +String description
+    +String method
+    +bool is_income
+    +bool deleted
+  }
+}
+
+' Relaciones entre modelos
+User "1" <-- "0..*" Transaction : performs
+Transaction --> Category : belongs to
+Category "1" <-- "0..*" Transaction
+@enduml
