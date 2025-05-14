@@ -1,0 +1,17 @@
+services:
+  
+  fintrack_app:
+    image: fintrack:v1.0
+    container_name: fintrack
+    ports:
+      - 5000:5000
+    networks:
+      - fintrack_network
+    environment:
+      - FLASK_CONTEXT=${FLASK_CONTEXT}
+      - DEV_DB_URI=${DEV_DB_URI}
+      - PROD_DB_URI=${PROD_DB_URI}
+
+networks:
+  fintrack_network:
+    external: true

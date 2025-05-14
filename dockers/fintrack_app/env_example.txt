@@ -1,0 +1,7 @@
+FLASK_APP = app.py
+FLASK_CONTEXT = development
+SECRET_KEY = secret_key
+DEV_DB_URI = 'postgresql://user:password@db:5432/fintrack'
+PROD_DB_URI = 'postgresql://user:password@db:5432/fintrack_prod'
+SQLALCHEMY_TRACK_MODIFICATIONS=False
+SQLALCHEMY_RECORD_QUERIES=False
