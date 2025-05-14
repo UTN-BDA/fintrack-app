@@ -1,0 +1,3 @@
+POSTGRES_USER = name_user
+POSTGRES_PASSWORD = name_password
+POSTGRES_DB = name_db
