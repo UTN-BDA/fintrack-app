@@ -12,36 +12,41 @@ class CategoryRepository:
         db.session.commit()
         return category
 
-    def update(self, category: Category, id: int) -> Category:
-        entity = self.find(id)
-        if entity is None:
+    def update(self, category_id: int, **kwargs) -> Category | None:
+        """Actualiza campos de la categoría indicada."""
+        category = self.get_by_id(category_id)
+        if not category:
             return None
-
-        entity.name = category.name
-        entity.is_favorite = category.is_favorite
-        entity.is_recurring = category.is_recurring
-
-        db.session.add(entity)
+        for attr, value in kwargs.items():
+            setattr(category, attr, value)
         db.session.commit()
-        return entity
+        return category
 
-    def delete(self, category: Category) -> None:
+    def get_all(self) -> list[Category]:
+        """Devuelve todas las categorías."""
+        return Category.query.all()
+
+    def get_by_id(self, category_id: int) -> Category | None:
+        """Devuelve la categoría por su ID."""
+        return Category.query.get(category_id)
+
+    def get_by_name(self, name: str) -> Category:
+        """Devuelve la categoría por su name."""
+        return Category.query.filter_by(name=name).all()
+    
+    def get_favorites(self) -> list[Category]:
+        """Devuelve sólo las categorías marcadas como favoritas."""
+        return Category.query.filter_by(is_favorite=True).all()
+
+    def get_recurring(self) -> list[Category]:
+        """Devuelve sólo las categorías recurrentes."""
+        return Category.query.filter_by(is_recurring=True).all()
+    
+    def delete(self, category_id: int) -> bool:
+        """Elimina (hard‑delete) la categoría indicada."""
+        category = self.get_by_id(category_id)
+        if not category:
+            return False
         db.session.delete(category)
         db.session.commit()
-
-    def all(self) -> List[Category]:
-        return db.session.query(Category).all()
-
-    def find(self, id: int) -> Category:
-        if id is None or id == 0:
-            return None
-        try:
-            return db.session.query(Category).filter(Category.id == id).one()
-        except:
-            return None
-
-    def find_by_name(self, name: str) -> Category:
-        return db.session.query(Category).filter(Category.name == name).one_or_none()
-
-    def find_favorites(self) -> List[Category]:
-        return db.session.query(Category).filter(Category.is_favorite == True).all()
+        return True
