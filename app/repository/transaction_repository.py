@@ -1,49 +1,73 @@
-from typing import List
+from typing import List, Optional
+from datetime import date
 from app import db
 from app.models import Transaction
 
 class TransactionRepository:
-    """
-    Repository for Transaction entity (Single Responsibility Principle).
-    """
 
     def save(self, transaction: Transaction) -> Transaction:
+        """Inserta o actualiza una transacción"""
         db.session.add(transaction)
         db.session.commit()
         return transaction
+    
+    def get_by_id(self, transaction_id: int) -> Optional[Transaction]:
+        """Devuelve una transacción por su ID (incluye borradas)"""
+        return Transaction.query.get(transaction_id)
+    
+    def get_all(self, page: int = 1, per_page: int = 20) -> List[Transaction]:
+        """Lista todas las transacciones no eliminadas, paginadas"""
+        pag = Transaction.query.filter_by(deleted=False).order_by(Transaction.date.desc()).paginate(page=page, per_page=per_page, error_out=False)
+        return pag.items
+    
+    def get_by_user(self, user_id: int, page: int = 1, per_page: int = 20) -> List[Transaction]:
+        """Lista transacciones de un usuario, no eliminadas, paginadas"""
+        pag = Transaction.query.filter_by(user_id=user_id, deleted=False).order_by(Transaction.date.desc()).paginate(page=page, per_page=per_page, error_out=False)
+        return pag.items
+    
+    def filter(
+        self,
+        user_id: int,
+        start_date: date = None,
+        end_date: date = None,
+        is_income: bool = None,
+        category_id: int = None,
+        page: int = 1,
+        per_page: int = 20
+    ) -> List[Transaction]:
+        """Filtra por rango de fechas, tipo y categoría"""
+        q = Transaction.query.filter_by(user_id=user_id, deleted=False)
+        if start_date:
+            q = q.filter(Transaction.date >= start_date)
+        if end_date:
+            q = q.filter(Transaction.date <= end_date)
+        if is_income is not None:
+            q = q.filter_by(is_income=is_income)
+        if category_id:
+            q = q.filter_by(category_id=category_id)
+        pag = q.order_by(Transaction.date.desc()).paginate(page=page, per_page=per_page, error_out=False)
+        return pag.items
 
-    def update(self, transaction: Transaction, id: int) -> Transaction:
-        entity = self.find(id)
-        if entity is None:
-            return None
-
-        entity.amount = transaction.amount
-        entity.date = transaction.date
-        entity.description = transaction.description
-        entity.method = transaction.method
-        entity.is_income = transaction.is_income
-        entity.deleted = transaction.deleted
-        entity.user_id = transaction.user_id
-        entity.category_id = transaction.category_id
-
-        db.session.add(entity)
+    def update(self, transaction: Transaction, **kwargs) -> Transaction:
+        """Actualiza campos de la transacción"""
+        for attr, val in kwargs.items():
+            setattr(transaction, attr, val)
         db.session.commit()
-        return entity
+        return transaction
 
     def delete(self, transaction: Transaction) -> None:
+        """Elimina físicamente la transacción"""
         db.session.delete(transaction)
         db.session.commit()
 
-    def all(self) -> List[Transaction]:
-        return db.session.query(Transaction).all()
+    def soft_delete(self, transaction: Transaction) -> Transaction:
+        """Marca la transacción como eliminada (deleted=True)"""
+        transaction.deleted = True
+        db.session.commit()
+        return transaction
 
-    def find(self, id: int) -> Transaction:
-        if id is None or id == 0:
-            return None
-        try:
-            return db.session.query(Transaction).filter(Transaction.id == id).one()
-        except:
-            return None
-
-    def find_by_user(self, user_id: int) -> List[Transaction]:
-        return db.session.query(Transaction).filter(Transaction.user_id == user_id).all()
+    def restore(self, transaction: Transaction) -> Transaction:
+        """Restaura una transacción borrada (deleted=False)"""
+        transaction.deleted = False
+        db.session.commit()
+        return transaction
