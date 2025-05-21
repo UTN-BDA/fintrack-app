@@ -1,11 +1,10 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app.config.config import config
 from app.resources.routes import RouteApp
 import os
+from app.extensions import db
 
-db = SQLAlchemy()
 migrate = Migrate()
 
 def create_app():

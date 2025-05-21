@@ -1,5 +1,5 @@
 from typing import List
-from app import db
+from app.extensions import db
 from app.models import Category
 
 class CategoryRepository:

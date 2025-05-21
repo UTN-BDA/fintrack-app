@@ -1,6 +1,6 @@
 from typing import List, Optional
 from datetime import date
-from app import db
+from app.extensions import db
 from app.models import Transaction
 
 class TransactionRepository:
