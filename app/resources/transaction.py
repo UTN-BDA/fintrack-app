@@ -36,32 +36,26 @@ def create_transaction():
 def list_transactions():
     builder = ResponseBuilder()
     # filtros opcionales
-    user_id     = request.args.get('user_id', type=int)
+    user_id     = request.args.get('user_id',       type=int)
     start_date  = request.args.get('start_date')   # formato YYYY-MM-DD
     end_date    = request.args.get('end_date')
-    is_income   = request.args.get('is_income', type=lambda v: v.lower()=='true')
-    category_id = request.args.get('category_id', type=int)
-    page        = request.args.get('page', default=1,  type=int)
-    per_page    = request.args.get('per_page', default=20, type=int)
+    is_income   = request.args.get('is_income',     type=lambda v: v.lower()=='true')
+    category_id = request.args.get('category_id',   type=int)
+    page        = request.args.get('page',          default=1,  type=int)
+    per_page    = request.args.get('per_page',      default=20, type=int)
 
-    if any([start_date, end_date, is_income is not None, category_id]):
-        transactions = transaction_service.filter_transactions(
-            user_id=user_id,
-            start_date=start_date,
-            end_date=end_date,
-            is_income=is_income,
-            category_id=category_id,
-            page=page,
-            per_page=per_page
-        )
-    else:
-        transactions = transaction_service.list_transactions(
-            user_id=user_id,
-            page=page,
-            per_page=per_page
-        )
+    # Siempre usamos filter_transactions, dejando que el repo decida qué aplicar
+    transaction = transaction_service.filter_transactions(
+        user_id=user_id,
+        start_date=start_date,
+        end_date=end_date,
+        is_income=is_income,
+        category_id=category_id,
+        page=page,
+        per_page=per_page
+    )
 
-    data = transactions_schema.dump(transactions)
+    data = transactions_schema.dump(transaction)
     builder.add_message("Listado de transacciones").add_status_code(200).add_data(data)
     return response_schema.dump(builder.build()), 200
 

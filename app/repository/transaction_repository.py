@@ -27,7 +27,7 @@ class TransactionRepository:
     
     def filter(
         self,
-        user_id: int,
+        user_id: Optional[int] = None,
         start_date: date = None,
         end_date: date = None,
         is_income: bool = None,
@@ -36,7 +36,10 @@ class TransactionRepository:
         per_page: int = 20
     ) -> List[Transaction]:
         """Filtra por rango de fechas, tipo y categoría"""
-        q = Transaction.query.filter_by(user_id=user_id, deleted=False)
+        q = Transaction.query.filter_by(deleted=False)
+
+        if user_id is not None:
+            q = q.filter_by(user_id=user_id)
         if start_date:
             q = q.filter(Transaction.date >= start_date)
         if end_date:
