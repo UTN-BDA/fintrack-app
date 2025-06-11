@@ -70,3 +70,10 @@ Para generar los cambios descritos en el script de migración, hay que ejecutar:
 Referencia:
 
 - https://flask-migrate.readthedocs.io/en/latest/
+
+# Levantar el proyecto
+Una vez ya realizado todos los pasos anteriores podremos levantar el proyecto. 
+
+   `$ flask run`
+
+El proyecto ya estaria corriendo de manera local.
