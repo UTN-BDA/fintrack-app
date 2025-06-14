@@ -1,7 +1,9 @@
-from flask import Blueprint, request
+from datetime import datetime
+from flask import Blueprint, Response, request
 from marshmallow import ValidationError
 from app.services import TransactionService, ResponseBuilder
 from app.mapping import TransactionSchema, ResponseSchema
+from app.reports.csv_export import export_transactions_to_csv
 
 transaction_bp = Blueprint('transactions', __name__)
 
@@ -117,3 +119,55 @@ def restore_transaction(transaction_id):
     data = transaction_schema.dump(restored)
     builder.add_message("Transacción restaurada").add_status_code(200).add_data(data)
     return response_schema.dump(builder.build()), 200
+
+@transaction_bp.route('/export', methods=['GET'])
+def export_transactions():
+    """
+    Exporta transacciones a un archivo CSV.
+    Parámetros opcionales:
+    - user_id: ID del usuario para filtrar transacciones.
+    - start_date: Fecha de inicio (YYYY-MM-DD).
+    - end_date: Fecha de fin (YYYY-MM-DD).
+    - is_income: true/false para filtrar por ingresos o egresos.
+    - category_id: ID de la categoría para filtrar.
+    """
+    try:
+        # Obtener parámetros de consulta
+        user_id = request.args.get('user_id', type=int)
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+        is_income = request.args.get('is_income', type=lambda v: v.lower() == 'true')
+        category_id = request.args.get('category_id', type=int)
+
+        # Convertir fechas si están presentes
+        start_date = start_date and datetime.strptime(start_date, "%Y-%m-%d").date()
+        end_date = end_date and datetime.strptime(end_date, "%Y-%m-%d").date()
+
+        # Obtener transacciones filtradas
+        transactions = transaction_service.filter_transactions(
+            user_id=user_id,
+            start_date=start_date,
+            end_date=end_date,
+            is_income=is_income,
+            category_id=category_id,
+            page=1,
+            per_page=10**6  # Exportar todas las transacciones
+        )
+
+        # Generar CSV
+        csv_data = export_transactions_to_csv(transactions)
+
+        # Crear respuesta con el archivo CSV
+        response = Response(
+            csv_data,
+            mimetype='text/csv',
+            headers={
+                "Content-Disposition": "attachment; filename=transactions.csv"
+            }
+        )
+        return response
+
+    except Exception as e:
+        builder = ResponseBuilder()
+        builder.add_message("Error al exportar transacciones").add_status_code(500).add_data({"error": str(e)})
+        return response_schema.dump(builder.build()), 500

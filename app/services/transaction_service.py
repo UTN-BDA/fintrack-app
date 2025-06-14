@@ -1,5 +1,5 @@
 # services/transaction_service.py
-from typing import List, Optional, Tuple
+from typing import List, Optional
 from datetime import date
 from app.models import Transaction
 from app.repository.transaction_repository import TransactionRepository
