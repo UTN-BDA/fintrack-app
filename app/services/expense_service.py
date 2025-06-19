@@ -59,3 +59,19 @@ class ExpenseService:
             "suma_maxima": max(amounts) if amounts else 0,
             "Suma_minima": min(amounts) if amounts else 0
         }
+
+    def total_income_expense_balance(self, user_id: int) -> Dict[str, float]:
+        """Calcula el total de ingresos, el total de gastos y el balance de todas las transacciones de un usuario"""
+        transactions = self.repo.filter(
+            user_id=user_id,
+            page=1,
+            per_page=10**6  # tomar todas las transacciones
+        )
+        total_income = sum(txn.amount for txn in transactions if txn.is_income)
+        total_expense = sum(txn.amount for txn in transactions if not txn.is_income)
+        balance = total_income - total_expense
+        return {
+            "total_ingresos": total_income,
+            "total_gastos": total_expense,
+            "balance": balance
+        }

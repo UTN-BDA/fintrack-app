@@ -80,3 +80,21 @@ def key_indicators():
     except ValidationError as err:
         builder.add_message("Error de validación").add_status_code(422).add_data({"error": str(err)})
         return response_schema.dump(builder.build()), 422
+
+@expense_bp.route('/total_income_expense_balance', methods=['GET'])
+def total_income_expense_balance():
+    builder = ResponseBuilder()
+    try:
+        # Validar y parsear parámetros
+        user_id = request.args.get('user_id', type=int)
+        if not user_id:
+            raise ValidationError("El parámetro 'user_id' es obligatorio.")
+
+        # Llamar al servicio
+        totals = expense_service.total_income_expense_balance(user_id=user_id)
+        builder.add_message("Totales calculados correctamente").add_status_code(200).add_data(totals)
+        return response_schema.dump(builder.build()), 200
+
+    except ValidationError as err:
+        builder.add_message("Error de validación").add_status_code(422).add_data({"error": str(err)})
+        return response_schema.dump(builder.build()), 422
