@@ -27,7 +27,7 @@ def create_category():
         builder.add_message("Error de validación").add_status_code(422).add_data(err.messages)
         return response_schema.dump(builder.build()), 422
 
-@category_bp.route('', methods=['GET'])
+@category_bp.route('/all', methods=['GET'])
 def list_categories():
     builder = ResponseBuilder()
     favorites = request.args.get('favorites_only', 'false').lower() == 'true'
