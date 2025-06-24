@@ -1,0 +1,12 @@
+FLASK_APP=app.py
+FLASK_CONTEXT=development
+DEV_DB_URI=postgresql://user:password@localhost:5440/fintrack
+TEST_DB_URI=postgresql://user:password@localhost:5440/fintrack_test
+PROD_DB_URI=postgresql://user:password@localhost:5440/fintrack_prod
+
+SECRET_KEY= secret_key
+
+REDIS_HOST=redis_host
+REDIS_PORT=6379
+REDIS_DB=0
+REDIS_PASSWORD=redis_password
