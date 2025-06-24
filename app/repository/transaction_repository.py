@@ -1,7 +1,8 @@
 from typing import List, Optional
 from datetime import date
 from app.extensions import db
-from app.models import Transaction
+from app.models import Transaction, Category
+from sqlalchemy import func
 
 class TransactionRepository:
 
@@ -74,3 +75,23 @@ class TransactionRepository:
         transaction.deleted = False
         db.session.commit()
         return transaction
+
+    def generate_graph(self, user_id: int ):
+        """Devuelve el total de gastos por categoría de un usuario"""
+        results = (
+            db.session.query(
+                Category.name.label('category'),
+                func.sum(Transaction.amount).label('total')
+            )
+            .join(Category, Category.id == Transaction.category_id)
+            .filter(
+                Transaction.user_id == user_id,
+                Transaction.deleted == False,
+                Transaction.is_income == False  # Solo gastos
+            )
+            .group_by(Category.name)
+            .all()
+        )
+        list_of_prices = [float(row.total) for row in results]
+        list_of_categories = [row.category for row in results]
+        return list_of_prices, list_of_categories
