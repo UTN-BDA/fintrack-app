@@ -171,3 +171,27 @@ def export_transactions():
         builder = ResponseBuilder()
         builder.add_message("Error al exportar transacciones").add_status_code(500).add_data({"error": str(e)})
         return response_schema.dump(builder.build()), 500
+
+@transaction_bp.route('/<int:user_id>/graph', methods=['GET'])
+def summary_by_category(user_id):
+    builder = ResponseBuilder()
+    try:
+        image_url = transaction_service.generate_graph(user_id)
+        builder.add_message("Gráfico generado exitosamente").add_status_code(200).add_data({"image_url": image_url})
+        return response_schema.dump(builder.build()), 200
+    except ValueError as e:
+        builder.add_message(str(e)).add_status_code(404)
+        return response_schema.dump(builder.build()), 404
+
+@transaction_bp.route('/images/<image_key>', methods=['GET'])
+def serve_image(image_key):
+    """Recupera una imagen desde Redis y la sirve como respuesta HTTP"""
+    try:
+        image_data = transaction_service.redis_client.get(image_key)
+        if not image_data:
+            return Response("Imagen no encontrada", status=404)
+
+        return Response(image_data, mimetype='image/png')
+    except Exception as e:
+        print(f"❌ Error al servir la imagen: {e}")
+        return Response("Error interno del servidor", status=500)

@@ -21,6 +21,7 @@ WORKDIR /app
 # Copiar los archivos de la aplicación al contenedor
 COPY ./app ./app
 COPY ./app.py .
+COPY .env .env
 
 # Añadir el archivo requirements.txt e instalar las dependencias de Python
 ADD requirements.txt ./requirements.txt

@@ -1,12 +1,28 @@
-# services/transaction_service.py
+import os
+from pathlib import Path
+from dotenv import load_dotenv
 from typing import List, Optional
 from datetime import date
+import matplotlib
+import matplotlib.pyplot as plt
+from io import BytesIO
+from uuid import uuid4
+import redis
 from app.models import Transaction
 from app.repository.transaction_repository import TransactionRepository
+
+basedir = os.path.abspath(Path(__file__).parents[2])
+load_dotenv(os.path.join(basedir, '.env'))
 
 class TransactionService:
     def __init__(self, repo: TransactionRepository = None):
         self.repo = repo or TransactionRepository()
+        self.redis_client = redis.StrictRedis(
+            host=os.environ.get('REDIS_HOST'),
+            port=int(os.environ.get('REDIS_PORT')),
+            db=int(os.environ.get('REDIS_DB')),
+            password=os.environ.get('REDIS_PASSWORD'),
+        )
 
     def create_transaction(
         self,
@@ -99,3 +115,68 @@ class TransactionService:
         if not transaction:
             return None
         return self.repo.restore(transaction)
+    
+    def generate_graph(self, user_id: int) -> str:
+        """
+        Genera un gráfico tipo dona de los gastos por categoría para un usuario,
+        lo guarda en Redis como un objeto binario y devuelve la URL para acceder a la imagen.
+        """
+        if not user_id:
+            raise ValueError("El user_id no puede ser None")
+        
+        matplotlib.use('Agg')
+        amounts, labels = self.repo.generate_graph(user_id)
+
+        if not amounts:
+            raise ValueError("No hay datos para generar el gráfico")
+
+        colors = [
+            "#A28DFF", "#91E3A5", "#FFDC7D", "#FF9139",
+            "#00FFA3", "#FFD6E0", "#96D3F5", "#FF6A6A"
+        ][:len(amounts)]
+
+        fig, ax = plt.subplots(figsize=(6, 6), dpi=100)
+
+        wedges, _ = ax.pie(
+            amounts,
+            labels=None,
+            startangle=90,
+            wedgeprops=dict(width=0.4, edgecolor='white'),
+            colors=colors
+        )
+
+        legend_labels = [f"{label}  ${int(amount)}" for label, amount in zip(labels, amounts)]
+
+        ax.legend(
+            wedges,
+            legend_labels,
+            title="Categorías",
+            loc='lower center',
+            bbox_to_anchor=(0.5, -0.15),
+            ncol=2,
+            frameon=False,
+            fontsize=10
+        )
+
+        buffer = BytesIO()
+        try:
+            plt.savefig(buffer, format='png', transparent=True, bbox_inches='tight')
+            buffer.seek(0)
+            image_data = buffer.getvalue()
+            buffer.close()
+
+            # Generar un identificador único para la imagen
+            image_key = f"donut_chart_user_{user_id}_{uuid4().hex}"
+
+            # Guardar la imagen en Redis con un TTL de 300 segundos (5 minutos)
+            self.redis_client.setex(image_key, 300, image_data)
+
+            print("✅ Imagen guardada en Redis con clave:", image_key)
+        except Exception as e:
+            print("❌ Error al guardar imagen en Redis:", e)
+            raise e
+        finally:
+            plt.close()
+
+        # Devolver la URL para acceder a la imagen
+        return f"/transactions/images/{image_key}"
