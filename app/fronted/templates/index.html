@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <i class="icon">📘</i> Gestión de Gastos
+    <a href="{{ url_for('home.logout') }}" class="logout-btn">Cerrar sesión</a>
+  </header>
+
+    <div class="container">
+        <div class="actions-filters-container">
+            <div class="filters">
+                <form method="GET" action="{{ url_for('home.index') }}">
+                    <!-- Filtro por Categoría -->
+                    <div class="filter-group">
+                        <label for="category_id">Categoría:</label>
+                        <select name="category_id" id="category_id">
+                            <option value="">Todas</option>
+                            {% for category in categories %}
+                                <option value="{{ category.id }}" {% if request.args.get('category_id') == category.id %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <!-- Filtro por Ingreso/Egreso -->
+                    <div class="filter-group">
+                        <label for="is_income">Ingreso/Egreso:</label>
+                        <select name="is_income" id="is_income">
+                            <option value="">Ambos</option>
+                            <option value="true" {% if request.args.get('is_income') == 'true' %}selected{% endif %}>Ingreso</option>
+                            <option value="false" {% if request.args.get('is_income') == 'false' %}selected{% endif %}>Egreso</option>
+                        </select>
+                    </div>
+                
+                    <!-- Filtro por Rango de Fechas -->
+                    <div class="filter-group">
+                        <label for="start_date">Desde:</label>
+                        <input type="date" id="start_date" name="start_date" value="{{ request.args.get('start_date', '') }}">
+                    </div>
+                
+                    <div class="filter-group">
+                        <label for="end_date">Hasta:</label>
+                        <input type="date" id="end_date" name="end_date" value="{{ request.args.get('end_date', '') }}">
+                    </div>
+                
+                    <!-- Botón para aplicar filtros -->
+                    <button type="submit" class="btn-filter">Filtrar</button>
+                </form>
+            </div>
+
+            <div class="actions">
+                <form method="GET" action="{{ url_for('home.add_transaction') }}">
+                    <button type="submit" class="btn-income">Agregar Transaccion</button>
+                </form>
+                <form method="GET" action="{{ url_for('home.edit_transaction') }}">
+                    <button type="submit" class="btn-category">Editar Transaccion</button>
+                </form>
+                <form method="GET" action="{{ url_for('home.delete_transaction') }}">
+                    <button type="submit" class="btn-expense">Eliminar Transaccion</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="summary">
+            <div class="card">
+                <h4>Total Ingresos</h4>
+                <div class="income">${{ total_ingresos }}</div>
+            </div>
+            <div class="card">
+                <h4>Total Gastos</h4>
+                <div class="expense">${{ total_gastos }}</div>
+            </div>
+            <div class="card">
+                <h4>Balance</h4>
+                <div class="balance {% if balance >= 0 %}positive{% else %}negative{% endif %}">${{ balance }}</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="chart">
+                <h3>Gastos por Categoría</h3>
+                    {% if image_url %}
+                        <img src="{{ image_url }}" alt="Gráfico de Gastos">
+                    {% else %}
+                        <p>No se pudo cargar el gráfico.</p>
+                    {% endif %}
+            </div>
+
+            <div class="transactions">
+                <h3>Transacciones del Mes</h3>
+                <table id="tabla-transacciones">
+                    <thead>
+                        <tr>
+                            <th>Monto</th>
+                            <th>Fecha</th>
+                            <th>Descripción</th>
+                            <th>Método</th>
+                            <th>Ingreso/Egreso</th>
+                            <th>Categoría</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.amount }}</td>
+                            <td>{{ transaction.date }}</td>
+                            <td>{{ transaction.description }}</td>
+                            <td>{{ transaction.method }}</td>
+                            <td>{{ 'Ingreso' if transaction.is_income else 'Egreso' }}</td>
+                            <td>{{ category_dict[transaction.category_id] if transaction.category_id in category_dict else 'Sin categoría' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="export-btn-container">
+                    <form method="GET" action="{{ url_for('home.export_transactions') }}">
+                        <button type="submit" class="btn-export">Exportar transacciones</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

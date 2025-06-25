@@ -1,0 +1,439 @@
+/* ===========================
+   General Styles
+   =========================== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: #f9fafb;
+    color: #111827;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #444;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* ===========================
+   Header Styles
+   =========================== */
+header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+header i {
+    margin-right: 0.5rem;
+}
+
+/* Logout button styles */
+.logout-btn {
+    margin-left: auto;
+    padding: 0.5rem 1rem;
+    background-color: #ef4444;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.logout-btn:hover {
+    background-color: darkred;
+}
+
+/* ===========================
+   Form Styles
+   =========================== */
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+form input, form select, form button {
+    width: 100%;
+    padding: 5px 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* ===========================
+    Transaction Form Styles
+   =========================== */
+.transaction-form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.transaction-form input, 
+.transaction-form select, 
+.transaction-form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.transaction-form input:focus, 
+.transaction-form select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.transaction-form button {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.transaction-form button:hover {
+    background-color: #059669;
+}
+
+/* ===========================
+   Login Info Styles
+   =========================== */
+.login-info {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.login-info label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.login-info input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.login-info button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.login-info button:hover {
+    background-color: #0056b3;
+}
+
+/* ===========================
+   Container and Layout Styles
+   =========================== */
+.container {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.card {
+    flex: 1;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.card h4 {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.income {
+    color: #10b981;
+}
+
+.expense {
+    color: #ef4444;
+}
+
+.positive {
+    color: #10b981; /* Verde para valores positivos */
+}
+
+.negative {
+    color: #ef4444; /* Rojo para valores negativos */
+}
+
+/* ===========================
+   Button Styles
+   =========================== */
+div a {
+    display: inline-block;
+    margin: 10px 5px;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.actions button {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-income {
+    background: #10b981;
+    color: white;
+}
+
+.btn-income:hover {
+    background-color: darkgreen;
+}
+
+.btn-expense {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-expense:hover {
+    background-color: darkred;
+}
+
+.btn-category {
+    color: black;
+}
+
+.btn-category:hover {
+    background-color: rgb(152, 146, 146);
+}
+
+/* ===========================
+   Content and Table Styles
+   =========================== */
+.content {
+    display: flex;
+    gap: 2rem;
+}
+
+.chart {
+    width: 100%;
+    max-width: 500px;
+    display: block;
+    margin: auto;
+}
+
+.transactions {
+    flex: 1;
+}
+
+.chart, .transactions {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.transactions table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.transactions th, .transactions td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+}
+
+.export-btn-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    margin-top: 1rem;
+}
+
+.btn-export {
+    background-color: #6366f1;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.7rem 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: background 0.2s;
+}
+
+.btn-export:hover {
+    background-color: #4338ca;
+}
+
+/* ===========================
+   Miscellaneous Styles
+   =========================== */
+.badge {
+    background: #e5e7eb;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.amount-positive {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.amount-negative {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.delete-btn {
+    color: #ef4444;
+    cursor: pointer;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* ===========================
+   Actions and Filters Styles
+   =========================== */
+.actions-filters-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.filters {
+    display: flex;
+    gap: 15px; /* Espacio entre los filtros */
+    align-items: center;
+    flex-wrap: nowrap; /* Evita que los filtros se envuelvan */
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filters form {
+    display: flex;
+    gap: 8px; /* Espacio entre los elementos del formulario */
+    align-items: center; /* Alinea los elementos verticalmente */
+}
+
+.filters label {
+    font-weight: bold;
+    font-size: 0.9rem;
+    white-space: nowrap; /* Evita que el texto del label se divida en varias líneas */
+    margin-right: 5px; /* Espacio entre el label y el campo */
+}
+
+.filters select, .filters input {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    width: auto; /* Ajusta el ancho automáticamente */
+}
+
+.filters .filter-group {
+    display: flex;
+    align-items: center; /* Alinea el label y el campo en la misma línea */
+}
+
+.filters .btn-filter {
+    width: 100%; /* Hace que el botón ocupe toda la línea */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.filters .btn-filter:hover {
+    background-color: #0056b3;
+}

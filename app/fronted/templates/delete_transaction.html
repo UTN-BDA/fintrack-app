@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Eliminar Transacción</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Botón para volver al index -->
+    <div>
+        <a href="{{ url_for('home.index') }}">Inicio</a>
+    </div>
+
+    <h1>Eliminar Transacción</h1>
+    <form class="transaction-form" method="POST" action="{{ url_for('home.delete_transaction') }}">
+        <label for="transaction_id">Selecciona una transacción para eliminar:</label>
+        <select id="transaction_id" name="transaction_id" required>
+            {% for transaction in transactions %}
+            <option value="{{ transaction.id }}">
+                {{ transaction.description }} - {{ transaction.amount }} - {{ transaction.date }}
+            </option>
+            {% endfor %}
+        </select>
+        <br>
+        <button type="submit">Eliminar</button>
+    </form>
+</body>
+</html>

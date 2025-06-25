@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Transacción</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Botón para volver al index -->
+    <div>
+        <a href="{{ url_for('home.index') }}">Inicio</a>
+    </div>
+
+    <h1>Editar Transacción</h1>
+    <form class="transaction-form" method="POST" action="{{ url_for('home.edit_transaction') }}">
+        <label for="transaction_id">Selecciona una transacción para editar:</label>
+        <select id="transaction_id" name="transaction_id" required>
+            {% for transaction in transactions %}
+            <option value="{{ transaction.id }}">
+                {{ transaction.description }} - {{ transaction.amount }} - {{ transaction.date }}
+            </option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="amount">Monto:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required>
+        <br>
+        <label for="date">Fecha:</label>
+        <input type="date" id="date" name="date" required>
+        <br>
+        <label for="description">Descripción:</label>
+        <input type="text" id="description" name="description" required>
+        <br>
+        <label for="method">Método:</label>
+        <input type="text" id="method" name="method" required>
+        <br>
+        <label for="is_income">¿Es ingreso?:</label>
+        <select id="is_income" name="is_income" required>
+            <option value="true">Sí</option>
+            <option value="false">No</option>
+        </select>
+        <br>
+        <label for="category_id">Categoría:</label>
+        <input type="number" id="category_id" name="category_id" required>
+        <br>
+        <button type="submit">Guardar Cambios</button>
+    </form>
+</body>
+</html>
