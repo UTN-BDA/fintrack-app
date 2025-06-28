@@ -45,8 +45,18 @@ Una vez ya creado el entorno virtual, configuraremos nuestro **.env**, en el rep
    ```bash
    cd dockers
    cd fintrack_db
+   ```
+   
+   Antes de levantar el contenedor, asegúrate de crear la red externa `fintrack_network`:
+   ```bash
+   docker network create fintrack_network
+   ```
+
+   Luego, ejecuta el siguiente comando para levantar el contenedor:
+   ```bash
    docker compose up
    ```
+   
 - Una vez realizado esto ya tendriamos nuestro servidor de base de datos ya corriendo.
 
 
@@ -54,15 +64,6 @@ Una vez ya creado el entorno virtual, configuraremos nuestro **.env**, en el rep
 Flask-Migrate es una extensión que nos permite manejar migraciones de bases de datos SQLAlchemy para aplicaciones desarrolladas en Flask.
 
 ## Instalación
-Para crear un repositorio de migración se debe ejecutar lo siguiente en la terminal:
-   
-   `$ flask db init`
-    
-
-El anterior comando crea una carpeta migrations en proyecto en Flask. Para generar una migración inicial se debe ejecutar el siguiente comando:
-
-  `$ flask db migrate -m "Migración Inicial"`
-
 Para generar los cambios descritos en el script de migración, hay que ejecutar:
 
    `$ flask db upgrade`
