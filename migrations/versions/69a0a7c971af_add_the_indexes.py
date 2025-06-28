@@ -22,8 +22,6 @@ def upgrade():
         batch_op.create_index('ix_category_name', ['name'], unique=False)
 
     with op.batch_alter_table('transaction', schema=None) as batch_op:
-        batch_op.drop_index('idx_transaction_user_date')
-        batch_op.drop_index('idx_uder_id')
         batch_op.create_index('ix_txn_active', ['id'], unique=False, postgresql_where=sa.text('deleted = false'))
         batch_op.create_index('ix_txn_category', ['category_id'], unique=False)
         batch_op.create_index('ix_txn_income', ['is_income'], unique=False)
