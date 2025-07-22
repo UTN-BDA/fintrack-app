@@ -18,8 +18,7 @@ def export_transactions_to_csv(transactions: List[Transaction]) -> bytes:
         "description",
         "method",
         "is_income",
-        "category_id",
-        "deleted"
+        "category_id"
     ])
 
     # Filas
@@ -31,7 +30,6 @@ def export_transactions_to_csv(transactions: List[Transaction]) -> bytes:
             txn.method or "",
             txn.is_income,
             txn.category_id if txn.category_id is not None else "",
-            txn.deleted
         ])
 
     # Obtener bytes
